@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function RestaurantCard({ shop }: Props) {
-  const imageUrl = shop.photo?.pc?.m || shop.photo?.pc?.s || ''
+    const imageUrl = (shop.photo?.pc?.m || shop.photo?.pc?.s || '').replace('http://', 'https://')
   const hasImage = imageUrl && !imageUrl.includes('noimage')
 
   return (
