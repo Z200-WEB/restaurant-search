@@ -36,7 +36,7 @@ export default function RestaurantCard({ shop }: Props) {
                                               <div className="absolute top-2 left-2">
                                                           <span className="bg-white/90 backdrop-blur-sm text-xs font-medium text-gray-700 px-2 py-1 rounded-full shadow-sm">
                                                                   {shop.genre?.name}
-                                                          </span>span>
+                                                          </span>
                                               </div>
                                     </div>
                             
@@ -44,7 +44,7 @@ export default function RestaurantCard({ shop }: Props) {
                                     <div className="p-4">
                                               <h2 className="font-semibold text-gray-900 text-base leading-snug mb-2 line-clamp-1 group-hover:text-orange-500 transition-colors">
                                                       {shop.name}
-                                              </h2>h2>
+                                              </h2>
                                     
                                             {shop.access && (
                                   <div className="flex items-start gap-1.5 mb-2">
