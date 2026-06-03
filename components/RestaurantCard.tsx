@@ -30,15 +30,15 @@ export default function RestaurantCard({ shop }: Props) {
                                 ) : (
                                   <div className="h-full flex items-center justify-center text-gray-300">
                                                 <Utensils size={40} />
-                                  </div>div>
+                                  </div>
                                               )}
                                             {/* Genre badge */}
                                               <div className="absolute top-2 left-2">
                                                           <span className="bg-white/90 backdrop-blur-sm text-xs font-medium text-gray-700 px-2 py-1 rounded-full shadow-sm">
                                                                   {shop.genre?.name}
                                                           </span>span>
-                                              </div>div>
-                                    </div>div>
+                                              </div>
+                                    </div>
                             
                                     {/* Info */}
                                     <div className="p-4">
@@ -49,22 +49,22 @@ export default function RestaurantCard({ shop }: Props) {
                                             {shop.access && (
                                   <div className="flex items-start gap-1.5 mb-2">
                                                 <MapPin size={12} className="text-gray-400 mt-0.5 shrink-0" />
-                                                <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{shop.access}</p>p>
-                                  </div>div>
+                                                <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{shop.access}</p>
+                                  </div>
                                               )}
                                     
                                             {shop.budget?.average && (
                                   <div className="flex items-center gap-1.5 mb-2">
                                                 <Wallet size={12} className="text-gray-400 shrink-0" />
-                                                <p className="text-xs text-gray-500">{shop.budget.average}</p>p>
-                                  </div>div>
+                                                <p className="text-xs text-gray-500">{shop.budget.average}</p>
+                                  </div>
                                               )}
                                     
                                             {shop.catch && (
-                                  <p className="text-xs text-orange-500 line-clamp-1 mt-1">{shop.catch}</p>p>
+                                  <p className="text-xs text-orange-500 line-clamp-1 mt-1">{shop.catch}</p>
                                               )}
-                                    </div>div>
-                            </article>article>
-              </Link>Link>
+                                    </div>
+                            </article>
+              </Link>
             )
 }</article>
