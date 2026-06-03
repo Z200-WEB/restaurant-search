@@ -8,7 +8,7 @@ import { RADIUS_OPTIONS, GENRE_OPTIONS, BUDGET_OPTIONS } from '@/lib/constants'
 
 export default function SearchForm() {
   const router = useRouter()
-  const { lat, lng, loading: geoLoading, error: geoError, getLocation } = useGeolocation()
+  const { lat, lng, loading: geoLoading, error: geoError, permissionDenied, getLocation } = useGeolocation()
 
   const [keyword, setKeyword] = useState('')
   const [range, setRange] = useState(3)
@@ -54,7 +54,16 @@ export default function SearchForm() {
             ✓ 位置情報を取得しました ({lat.toFixed(4)}, {lng?.toFixed(4)})
           </p>
         )}
-        {geoError && <p className="mt-2 text-sm text-red-500">{geoError}</p>}
+        {geoError && (
+          <div className={`mt-2 text-sm ${permissionDenied ? 'text-orange-600' : 'text-red-500'}`}>
+            <p>{geoError}</p>
+            {permissionDenied && (
+              <p className="mt-1 text-xs text-gray-500">
+                💡 iPhoneの場合：設定 → Safari → 位置情報 → 「確認」または「許可」に変更
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Divider */}
