@@ -1,33 +1,50 @@
-import { SearchX } from 'lucide-react'
-import Link from 'next/link'
+type EmptyVariant = 'no-results' | 'error' | 'favorites'
 
 interface EmptyStateProps {
-  title?: string
+  variant?: EmptyVariant
   message?: string
-  showBackButton?: boolean
+  onRetry?: () => void
 }
 
-export default function EmptyState({
-  title = 'お店が見つかりませんでした',
-  message = '検索条件を変えてもう一度お試しください',
-  showBackButton = true,
-}: EmptyStateProps) {
+export default function EmptyState({ variant = 'no-results', message, onRetry }: EmptyStateProps) {
+  const configs: Record<EmptyVariant, { emoji: string; title: string; desc: string }> = {
+    'no-results': {
+      emoji: '🔍',
+      title: '検索結果が見つかりません',
+      desc: message || '別のキーワードや検索条件をお試しください',
+    },
+    'error': {
+      emoji: '⚠️',
+      title: 'エラーが発生しました',
+      desc: message || 'しばらくしてから再度お試しください',
+    },
+    'favorites': {
+      emoji: '❤️',
+      title: 'お気に入りがありません',
+      desc: 'レストランカードのハートボタンを押してお気に入り登録できます',
+    },
+  }
+
+  const { emoji, title, desc } = configs[variant]
+
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-in">
-      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-        <SearchX size={28} className="text-gray-400" />
+    <div className="flex flex-col items-center justify-center py-20 px-4 text-center animate-fade-in">
+      <div
+        className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl mb-6"
+        style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-md)' }}
+      >
+        {emoji}
       </div>
-
-      <h3 className="text-lg font-semibold text-gray-800 mb-2">{title}</h3>
-      <p className="text-gray-500 text-sm max-w-xs mb-6">{message}</p>
-
-      {showBackButton && (
-        <Link
-          href="/"
-          className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-xl transition-colors"
-        >
-          検索に戻る
-        </Link>
+      <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+        {title}
+      </h3>
+      <p className="text-sm max-w-xs leading-relaxed mb-8" style={{ color: 'var(--text-secondary)' }}>
+        {desc}
+      </p>
+      {onRetry && (
+        <button onClick={onRetry} className="btn-primary px-6 py-3 text-sm">
+          もう一度試す
+        </button>
       )}
     </div>
   )
