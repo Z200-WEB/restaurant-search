@@ -2,13 +2,15 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { MapPin, Search, Loader2, ChevronDown } from 'lucide-react'
+import { MapPin, Search, Loader2, ChevronDown, Clock, X, Navigation } from 'lucide-react'
 import { useGeolocation } from '@/hooks/useGeolocation'
+import { useSearchHistory } from '@/hooks/useSearchHistory'
 import { RADIUS_OPTIONS, GENRE_OPTIONS, BUDGET_OPTIONS } from '@/lib/constants'
 
 export default function SearchForm() {
   const router = useRouter()
   const { lat, lng, loading: geoLoading, error: geoError, permissionDenied, getLocation } = useGeolocation()
+  const { history, addHistory, clearHistory } = useSearchHistory()
 
   const [keyword, setKeyword] = useState('')
   const [range, setRange] = useState(3)
@@ -17,49 +19,78 @@ export default function SearchForm() {
   const [showFilters, setShowFilters] = useState(false)
   const [formError, setFormError] = useState('')
 
-  const handleSearch = () => {
+  const handleSearch = (overrides?: { keyword?: string; lat?: number; lng?: number; range?: number }) => {
     setFormError('')
+    const kw = overrides?.keyword ?? keyword
+    const useLat = overrides?.lat ?? lat
+    const useLng = overrides?.lng ?? lng
+    const useRange = overrides?.range ?? range
 
-    if (!lat && !keyword.trim()) {
+    if (!useLat && !kw.trim()) {
       setFormError('現在地を取得するか、キーワードを入力してください')
       return
     }
 
+    // Save to search history
+    const label = kw.trim() || '現在地周辺'
+    addHistory({ keyword: kw.trim(), lat: useLat ?? undefined, lng: useLng ?? undefined, range: useRange, label })
+
     const params = new URLSearchParams()
-    if (lat) params.set('lat', String(lat))
-    if (lng) params.set('lng', String(lng))
-    params.set('range', String(range))
-    if (keyword.trim()) params.set('keyword', keyword.trim())
+    if (useLat) params.set('lat', String(useLat))
+    if (useLng) params.set('lng', String(useLng))
+    params.set('range', String(useRange))
+    if (kw.trim()) params.set('keyword', kw.trim())
     if (genre) params.set('genre', genre)
     if (budget) params.set('budget', budget)
 
     router.push(`/results?${params.toString()}`)
   }
 
+  const handleHistoryClick = (item: ReturnType<typeof useSearchHistory>['history'][number]) => {
+    setKeyword(item.keyword)
+    handleSearch({ keyword: item.keyword, lat: item.lat, lng: item.lng, range: item.range })
+  }
+
   return (
-    <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 text-left animate-fade-in">
+    <div
+      className="rounded-3xl overflow-hidden animate-fade-in"
+      style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border)' }}
+    >
       {/* Location button */}
-      <div className="mb-4">
+      <div className="p-5 pb-4">
         <button
           onClick={getLocation}
           disabled={geoLoading}
-          className="w-full flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white font-medium py-3 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+          className="w-full btn-primary py-3.5 text-sm rounded-2xl"
         >
-          {geoLoading ? <Loader2 size={18} className="animate-spin" /> : <MapPin size={18} />}
-          {geoLoading ? '位置情報を取得中...' : '現在地を使って検索'}
+          {geoLoading ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <Navigation size={16} />
+          )}
+          {geoLoading ? '位置情報を取得中...' : lat ? '現在地を更新する' : '現在地を使って検索'}
         </button>
 
+        {/* Location success */}
         {lat && (
-          <p className="mt-2 text-sm text-green-600">
-            ✓ 位置情報を取得しました ({lat.toFixed(4)}, {lng?.toFixed(4)})
-          </p>
+          <div className="flex items-center gap-1.5 mt-2.5 px-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+            <p className="text-xs font-medium text-green-600 dark:text-green-400">
+              現在地を取得しました ({lat.toFixed(4)}, {lng?.toFixed(4)})
+            </p>
+          </div>
         )}
+
+        {/* Location error */}
         {geoError && (
-          <div className={`mt-2 text-sm ${permissionDenied ? 'text-orange-600' : 'text-red-500'}`}>
-            <p>{geoError}</p>
+          <div
+            className="mt-2.5 p-3 rounded-xl text-sm"
+            style={{ background: permissionDenied ? 'rgba(251,146,60,0.1)' : 'rgba(239,68,68,0.08)' }}
+          >
+            <p style={{ color: permissionDenied ? 'var(--accent)' : '#ef4444' }}>{geoError}</p>
             {permissionDenied && (
-              <p className="mt-1 text-xs text-gray-500">
-                💡 iPhoneの場合：設定 → Safari → 位置情報 → 「確認」または「許可」に変更
+              <p className="mt-1 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                💡 設定 → ブラウザ → 位置情報 → 許可
               </p>
             )}
           </div>
@@ -67,100 +98,146 @@ export default function SearchForm() {
       </div>
 
       {/* Divider */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="flex-1 h-px bg-gray-200" />
-        <span className="text-xs text-gray-400">または</span>
-        <div className="flex-1 h-px bg-gray-200" />
+      <div className="flex items-center gap-3 px-5 pb-4">
+        <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+        <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>または</span>
+        <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
       </div>
 
-      {/* Keyword */}
-      <div className="mb-4">
+      {/* Keyword input */}
+      <div className="px-5 pb-4">
         <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-secondary)' }} />
           <input
             type="text"
             value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="キーワード（例：渋谷 居酒屋）"
-            className="w-full pl-9 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
+            onChange={e => setKeyword(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            placeholder="店名・エリア・料理ジャンル..."
+            className="input-base pl-10"
           />
         </div>
       </div>
 
-      {/* Radius selector (only when location acquired) */}
-      {lat && (
-        <div className="mb-4">
-          <label className="block text-xs font-medium text-gray-500 mb-2">検索範囲</label>
-          <div className="flex gap-2">
-            {RADIUS_OPTIONS.map((opt) => (
+      {/* Range selector */}
+      <div className="px-5 pb-4">
+        <div className="flex gap-2">
+          {RADIUS_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              onClick={() => setRange(opt.value)}
+              className="flex-1 py-2 text-xs font-medium rounded-xl transition-all duration-200"
+              style={{
+                background: range === opt.value ? 'var(--accent)' : 'var(--bg-primary)',
+                color: range === opt.value ? 'white' : 'var(--text-secondary)',
+                border: '1px solid ' + (range === opt.value ? 'var(--accent)' : 'var(--border)'),
+              }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Filters toggle */}
+      <div className="px-5 pb-4">
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="flex items-center gap-1.5 text-sm font-medium transition-colors duration-200"
+          style={{ color: showFilters ? 'var(--accent)' : 'var(--text-secondary)' }}
+        >
+          <ChevronDown
+            size={16}
+            className={`transition-transform duration-200 ${showFilters ? 'rotate-180' : ''}`}
+          />
+          {showFilters ? 'フィルターを閉じる' : 'ジャンル・予算でフィルター'}
+        </button>
+
+        {showFilters && (
+          <div className="mt-3 grid grid-cols-2 gap-3 animate-fade-in">
+            <div>
+              <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--text-secondary)' }}>ジャンル</label>
+              <div className="relative">
+                <select
+                  value={genre}
+                  onChange={e => setGenre(e.target.value)}
+                  className="input-base py-2.5 text-xs appearance-none pr-8"
+                >
+                  {GENRE_OPTIONS.map(g => (
+                    <option key={g.code} value={g.code}>{g.name}</option>
+                  ))}
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-secondary)' }} />
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--text-secondary)' }}>予算</label>
+              <div className="relative">
+                <select
+                  value={budget}
+                  onChange={e => setBudget(e.target.value)}
+                  className="input-base py-2.5 text-xs appearance-none pr-8"
+                >
+                  {BUDGET_OPTIONS.map(b => (
+                    <option key={b.code} value={b.code}>{b.name}</option>
+                  ))}
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-secondary)' }} />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Form error */}
+      {formError && (
+        <div className="mx-5 mb-4 px-4 py-3 rounded-xl text-sm" style={{ background: 'rgba(239,68,68,0.08)', color: '#ef4444' }}>
+          {formError}
+        </div>
+      )}
+
+      {/* Search button */}
+      <div className="px-5 pb-5">
+        <button
+          onClick={() => handleSearch()}
+          className="w-full btn-primary py-3.5 text-sm"
+        >
+          <Search size={16} />
+          レストランを探す
+        </button>
+      </div>
+
+      {/* Search history */}
+      {history.length > 0 && (
+        <div className="border-t px-5 py-4" style={{ borderColor: 'var(--border)' }}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-1.5">
+              <Clock size={13} style={{ color: 'var(--text-secondary)' }} />
+              <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>最近の検索</span>
+            </div>
+            <button
+              onClick={clearHistory}
+              className="text-xs transition-colors duration-200"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              クリア
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {history.map((item, i) => (
               <button
-                key={opt.value}
-                onClick={() => setRange(opt.value)}
-                className={`flex-1 py-2 text-sm rounded-lg border transition-all ${
-                  range === opt.value
-                    ? 'bg-orange-500 text-white border-orange-500 font-medium'
-                    : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'
-                }`}
+                key={i}
+                onClick={() => handleHistoryClick(item)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 hover:scale-105"
+                style={{ background: 'var(--bg-primary)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
               >
-                {opt.label}
+                <Clock size={11} />
+                {item.label}
               </button>
             ))}
           </div>
         </div>
       )}
-
-      {/* Filter toggle */}
-      <button
-        onClick={() => setShowFilters(!showFilters)}
-        className="flex items-center gap-1 text-sm text-orange-500 hover:text-orange-600 mb-4 transition-colors"
-      >
-        <ChevronDown size={16} className={`transition-transform ${showFilters ? 'rotate-180' : ''}`} />
-        こだわり条件
-      </button>
-
-      {/* Extra filters */}
-      {showFilters && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 animate-fade-in">
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">ジャンル</label>
-            <select
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
-            >
-              {GENRE_OPTIONS.map((g) => (
-                <option key={g.code} value={g.code}>{g.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">予算（ディナー）</label>
-            <select
-              value={budget}
-              onChange={(e) => setBudget(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
-            >
-              {BUDGET_OPTIONS.map((b) => (
-                <option key={b.code} value={b.code}>{b.name}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      )}
-
-      {/* Error */}
-      {formError && (
-        <p className="mb-3 text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{formError}</p>
-      )}
-
-      {/* Submit */}
-      <button
-        onClick={handleSearch}
-        className="w-full bg-gray-900 hover:bg-gray-700 text-white font-medium py-3 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
-      >
-        レストランを検索
-      </button>
     </div>
   )
 }
