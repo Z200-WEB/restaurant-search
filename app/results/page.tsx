@@ -51,8 +51,8 @@ function ResultsContent() {
       if (!res.ok) throw new Error('検索に失敗しました')
       const data = await res.json()
       setState({
-        shops: data.shops,
-        total: data.total,
+        shops: data.results?.shop ?? [],
+        total: data.results?.results_available ?? 0,
         loading: false,
         error: null,
       })
