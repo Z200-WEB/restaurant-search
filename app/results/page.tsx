@@ -81,9 +81,9 @@ function ResultsContent() {
       {state.loading ? (
         <LoadingGrid count={9} />
       ) : state.error ? (
-        <EmptyState type="error" message={state.error} onRetry={fetchShops} />
+        <EmptyState variant="error" message={state.error} onRetry={fetchShops} />
       ) : state.shops.length === 0 ? (
-        <EmptyState type="no-results" onRetry={() => router.back()} />
+        <EmptyState variant="no-results" onRetry={() => router.back()} />
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-stagger">
