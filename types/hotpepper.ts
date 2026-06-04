@@ -44,6 +44,7 @@ export interface Shop {
   }
   open: string
   close: string
+  tel?: string
   wifi: string
   course: string
   free_drink: string
