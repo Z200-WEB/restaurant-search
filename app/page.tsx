@@ -76,23 +76,6 @@ export default function HomePage() {
         {/* Strong dark overlay so text is always readable */}
         <div className="absolute inset-0 bg-black/60" style={{ zIndex: 2 }} />
 
-        {/* Slide dots — inside hero, above content */}
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2" style={{ zIndex: 10 }}>
-          {BG_PHOTOS.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentPhoto(idx)}
-              className="rounded-full transition-all duration-300"
-              style={{
-                width: idx === currentPhoto ? '24px' : '8px',
-                height: '8px',
-                background: idx === currentPhoto ? 'var(--accent)' : 'rgba(255,255,255,0.5)',
-              }}
-              aria-label={`Photo ${idx + 1}`}
-            />
-          ))}
-        </div>
-
         {/* Content */}
         <div className="max-w-lg mx-auto relative w-full" style={{ zIndex: 4 }}>
           <div className="flex justify-center mb-5">
