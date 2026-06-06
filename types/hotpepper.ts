@@ -81,4 +81,5 @@ export interface SearchParams {
   start?: number
   count?: number
   id?: string
+  open?: string
 }
