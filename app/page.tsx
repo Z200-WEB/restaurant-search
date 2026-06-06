@@ -6,7 +6,6 @@ import SearchForm from '@/components/SearchForm'
 
 const BG_PHOTOS = [
   'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80',
-  'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1920&q=80',
   'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80',
   'https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?w=1920&q=80',
   'https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1920&q=80',
@@ -19,7 +18,7 @@ export default function HomePage() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentPhoto(prev => (prev + 1) % BG_PHOTOS.length)
-    }, 4000)
+    }, 5000)
     return () => clearInterval(timer)
   }, [])
 
@@ -74,11 +73,11 @@ export default function HomePage() {
           />
         ))}
 
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/55" style={{ zIndex: 2 }} />
+        {/* Strong dark overlay so text is always readable */}
+        <div className="absolute inset-0 bg-black/60" style={{ zIndex: 2 }} />
 
-        {/* Slide dots */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2" style={{ zIndex: 10 }}>
+        {/* Slide dots — inside hero, above content */}
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2" style={{ zIndex: 10 }}>
           {BG_PHOTOS.map((_, idx) => (
             <button
               key={idx}
@@ -87,15 +86,12 @@ export default function HomePage() {
               style={{
                 width: idx === currentPhoto ? '24px' : '8px',
                 height: '8px',
-                background: idx === currentPhoto ? 'var(--accent)' : 'rgba(255,255,255,0.4)',
+                background: idx === currentPhoto ? 'var(--accent)' : 'rgba(255,255,255,0.5)',
               }}
               aria-label={`Photo ${idx + 1}`}
             />
           ))}
         </div>
-
-        {/* Orange bottom accent */}
-        <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none" style={{ background: 'var(--accent)', zIndex: 3 }} />
 
         {/* Content */}
         <div className="max-w-lg mx-auto relative w-full" style={{ zIndex: 4 }}>
@@ -112,39 +108,44 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Features */}
-      <div className="max-w-lg mx-auto px-4 py-8">
-        <div className="grid grid-cols-3 gap-3">
-          <button
-            onClick={handleGPS}
-            className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-200 cursor-pointer"
-          >
-            <span className="text-2xl">📍</span>
-            <div>
-              <div className="font-semibold text-sm text-white">現在地で探す</div>
-              <div className="text-xs text-white/50 mt-0.5">GPS検索</div>
-            </div>
-          </button>
-          <button
-            onClick={handleOpenNow}
-            className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-200 cursor-pointer"
-          >
-            <span className="text-2xl">🔥</span>
-            <div>
-              <div className="font-semibold text-sm text-white">今すぐ開いてる</div>
-              <div className="text-xs text-white/50 mt-0.5">営業中の店のみ</div>
-            </div>
-          </button>
-          <button
-            onClick={handleFavorites}
-            className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-200 cursor-pointer"
-          >
-            <span className="text-2xl">⭐</span>
-            <div>
-              <div className="font-semibold text-sm text-white">お気に入り</div>
-              <div className="text-xs text-white/50 mt-0.5">お店を保存</div>
-            </div>
-          </button>
+      {/* Features — dark card area, always readable */}
+      <div style={{ background: 'var(--bg-secondary, #1a1a1a)' }}>
+        <div className="max-w-lg mx-auto px-4 py-8">
+          <div className="grid grid-cols-3 gap-3">
+            <button
+              onClick={handleGPS}
+              className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/10 transition-all duration-200 cursor-pointer hover:border-white/30"
+              style={{ background: 'rgba(255,255,255,0.07)' }}
+            >
+              <span className="text-2xl">📍</span>
+              <div>
+                <div className="font-semibold text-sm text-white">現在地で探す</div>
+                <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>GPS検索</div>
+              </div>
+            </button>
+            <button
+              onClick={handleOpenNow}
+              className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/10 transition-all duration-200 cursor-pointer hover:border-white/30"
+              style={{ background: 'rgba(255,255,255,0.07)' }}
+            >
+              <span className="text-2xl">🔥</span>
+              <div>
+                <div className="font-semibold text-sm text-white">今すぐ開いてる</div>
+                <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>営業中の店のみ</div>
+              </div>
+            </button>
+            <button
+              onClick={handleFavorites}
+              className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/10 transition-all duration-200 cursor-pointer hover:border-white/30"
+              style={{ background: 'rgba(255,255,255,0.07)' }}
+            >
+              <span className="text-2xl">⭐</span>
+              <div>
+                <div className="font-semibold text-sm text-white">お気に入り</div>
+                <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>お店を保存</div>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </div>
