@@ -6,22 +6,28 @@ import SearchForm from '@/components/SearchForm'
 export default function HomePage() {
   const router = useRouter()
 
+  // GPS検索: get current location → results page (grid view)
   const handleGPS = () => {
-    if (!navigator.geolocation) return
+    if (!navigator.geolocation) {
+      alert('お使いのブラウザは位置情報に対応していません')
+      return
+    }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords
         router.push(`/results?lat=${lat}&lng=${lng}&range=3&page=1`)
       },
-      () => alert('位置情報の取得に失敗しました')
+      () => alert('位置情報の取得に失敗しました。ブラウザの設定をご確認ください。')
     )
   }
 
+  // お気に入り: navigate to saved favorites list
   const handleFavorites = () => router.push('/favorites')
 
+  // Maps連携: get current location → results page (map view)
   const handleMaps = () => {
     if (!navigator.geolocation) {
-      router.push('/favorites')
+      alert('お使いのブラウザは位置情報に対応していません')
       return
     }
     navigator.geolocation.getCurrentPosition(
@@ -29,7 +35,7 @@ export default function HomePage() {
         const { latitude: lat, longitude: lng } = pos.coords
         router.push(`/results?lat=${lat}&lng=${lng}&range=3&page=1&viewMode=map`)
       },
-      () => router.push('/favorites')
+      () => alert('位置情報の取得に失敗しました。ブラウザの設定をご確認ください。')
     )
   }
 
@@ -64,22 +70,35 @@ export default function HomePage() {
       {/* Features */}
       <div className="max-w-lg mx-auto px-4 py-8">
         <div className="grid grid-cols-3 gap-3">
-          {[
-            { icon: '📍', label: 'GPS検索', desc: '現在地から検索', onClick: handleGPS },
-            { icon: '❤️', label: 'お気に入り', desc: 'お店を保存', onClick: handleFavorites },
-            { icon: '🗺️', label: 'Maps連携', desc: '地図で確認', onClick: handleMaps },
-          ].map(f => (
-            <button
-              key={f.label}
-              onClick={f.onClick}
-              className="flex flex-col items-center gap-1.5 p-4 rounded-2xl transition-transform hover:scale-105 active:scale-95 cursor-pointer w-full"
-              style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
-            >
-              <span className="text-2xl">{f.icon}</span>
-              <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{f.label}</span>
-              <span className="text-[10px] text-center" style={{ color: 'var(--text-secondary)' }}>{f.desc}</span>
-            </button>
-          ))}
+          <button
+            onClick={handleGPS}
+            className="flex flex-col items-center gap-1.5 p-4 rounded-2xl transition-transform hover:scale-105 active:scale-95 cursor-pointer w-full"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          >
+            <span className="text-2xl">📍</span>
+            <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>GPS検索</span>
+            <span className="text-[10px] text-center" style={{ color: 'var(--text-secondary)' }}>現在地から検索</span>
+          </button>
+
+          <button
+            onClick={handleFavorites}
+            className="flex flex-col items-center gap-1.5 p-4 rounded-2xl transition-transform hover:scale-105 active:scale-95 cursor-pointer w-full"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          >
+            <span className="text-2xl">❤️</span>
+            <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>お気に入り</span>
+            <span className="text-[10px] text-center" style={{ color: 'var(--text-secondary)' }}>お店を保存</span>
+          </button>
+
+          <button
+            onClick={handleMaps}
+            className="flex flex-col items-center gap-1.5 p-4 rounded-2xl transition-transform hover:scale-105 active:scale-95 cursor-pointer w-full"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          >
+            <span className="text-2xl">🗺️</span>
+            <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>Maps連携</span>
+            <span className="text-[10px] text-center" style={{ color: 'var(--text-secondary)' }}>地図で確認</span>
+          </button>
         </div>
       </div>
     </div>
