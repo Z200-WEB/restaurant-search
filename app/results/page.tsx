@@ -171,7 +171,7 @@ function ResultsContent() {
       </div>
 
       {/* Genre filter chips */}
-      <div className="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide animate-fade-in" style={{ animationDelay: '60ms' }}>
+      <div className="flex gap-2 overflow-x-auto pb-3 mb-4 animate-fade-in" style={{ animationDelay: '60ms' }}>
         {GENRES.map(g => (
           <button
             key={g.code}
