@@ -22,7 +22,7 @@ export default function RestaurantDetailPage() {
         const res = await fetch(`/api/restaurant/${id}`)
         if (!res.ok) throw new Error('店舗情報の取得に失敗しました')
         const data = await res.json()
-        setShop(data.shop)
+        setShop(data)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'エラーが発生しました')
       } finally {
