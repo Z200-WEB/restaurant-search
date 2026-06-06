@@ -151,3 +151,36 @@
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
+
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Stagger animation for cards */
+.animate-stagger > * {
+  opacity: 0;
+  animation: fadeInUp 0.4s ease forwards;
+}
+.animate-stagger > *:nth-child(1)  { animation-delay: 0ms; }
+.animate-stagger > *:nth-child(2)  { animation-delay: 60ms; }
+.animate-stagger > *:nth-child(3)  { animation-delay: 120ms; }
+.animate-stagger > *:nth-child(4)  { animation-delay: 180ms; }
+.animate-stagger > *:nth-child(5)  { animation-delay: 240ms; }
+.animate-stagger > *:nth-child(6)  { animation-delay: 300ms; }
+.animate-stagger > *:nth-child(7)  { animation-delay: 360ms; }
+.animate-stagger > *:nth-child(8)  { animation-delay: 420ms; }
+.animate-stagger > *:nth-child(9)  { animation-delay: 480ms; }
+.animate-stagger > *:nth-child(10) { animation-delay: 540ms; }
+.animate-stagger > *:nth-child(11) { animation-delay: 600ms; }
+.animate-stagger > *:nth-child(12) { animation-delay: 660ms; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
