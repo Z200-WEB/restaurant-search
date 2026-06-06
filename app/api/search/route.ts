@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     keyword: searchParams.get('keyword') || undefined,
     genre: searchParams.get('genre') || undefined,
     budget: searchParams.get('budget') || undefined,
+    open: searchParams.get('open') || undefined,
     start: searchParams.get('start') ? Number(searchParams.get('start')) : 1,
     count: 12,
   }
