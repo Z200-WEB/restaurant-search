@@ -12,7 +12,7 @@
 
 | ホーム | 検索結果 | 店舗詳細 |
 |--------|---------|---------|
-| HDスライドショー背景 + 検索フォーム | グリッド / マップビュー切替 | 営業時間・アクセス・Google Maps連携 |
+| ![ホーム](docs/screenshot-home.png) | ![検索結果](docs/screenshot-results.png) | ![店舗詳細](docs/screenshot-detail.png) |
 
 ---
 
