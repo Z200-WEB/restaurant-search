@@ -11,8 +11,8 @@ const notoSansJP = Noto_Sans_JP({
 })
 
 export const metadata: Metadata = {
-  title: 'グルメサーチ | レストラン検索',
-  description: 'ホットペッパーグルメAPIを使ったレストラン検索アプリ',
+  title: 'SAR YA AUNG | レストラン検索',
+  description: 'ミャンマー語で「食べましょう」— Hot Pepper APIを使ったレストラン検索アプリ',
   manifest: '/manifest.json',
 }
 
