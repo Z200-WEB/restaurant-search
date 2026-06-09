@@ -64,7 +64,7 @@ export default function Navbar() {
             <UtensilsCrossed size={16} />
           </div>
           <span className="font-bold text-base tracking-tight" style={{ color: 'var(--text-primary)' }}>
-            グルメサーチ
+            SAR YA AUNG
           </span>
         </Link>
 
