@@ -78,9 +78,6 @@ export default function HomePage() {
 
         {/* Content */}
         <div className="max-w-lg mx-auto relative w-full" style={{ zIndex: 4 }}>
-          <div className="flex justify-center mb-5">
-            <span className="badge text-xs px-3 py-1.5 font-semibold tracking-widest uppercase">Hot Pepper Gourmet</span>
-          </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-center leading-tight mb-3 tracking-tight text-white drop-shadow-lg">
             近くの<span style={{ color: 'var(--accent)' }}>美味しい</span><br />お店を探す
           </h1>
